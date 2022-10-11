@@ -29,6 +29,22 @@ router.post("/", (req, res, next) => {
 		res.send("Data Is messing ....");
 	}
 });
+
+router.put("/:id", (req, res, next) => {
+	const reqId = +req.params.id;
+	const { name, height, size, id: bodyId, location } = req.body;
+
+	if (1 * bodyId !== 1 * reqId) {
+		res.json({ error: "ids do not match" });
+	}
+	const sql = `UPDATE trees SET tree=?,location=?,height_ft=?,ground_circumference=? WHERE id=? `;
+	const param = [name, location, height, size, +reqId];
+	db.all(sql, param, (err) => {
+		if (err) next(err);
+		res.json({ status: "Success" });
+	});
+});
+
 router.delete("/:id", (req, res, next) => {
 	const id = req.params.id;
 	const sql = `DELETE FROM trees WHERE id=?;`;
